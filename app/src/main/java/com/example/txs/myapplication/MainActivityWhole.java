@@ -3,6 +3,7 @@ package com.example.txs.myapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivityWhole extends AppCompatActivity {
     /**
@@ -64,7 +67,15 @@ public class MainActivityWhole extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_whole);
         initView();
-        initData();
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+        try {
+            initData();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         refreshUI();
         setListener();
     }
@@ -147,14 +158,23 @@ public class MainActivityWhole extends AppCompatActivity {
     }
 
     //加载数据
-    private void initData() {
+    private void initData() throws JSONException {
         //从网络上获取数据
-//        String http = "https://belarusbank.by/api/infobox?city=%D0%9C%D0%B8%D0%BD%D1%81%D0%BA";
-//        String str = doGet(http);
+        final String http = "https://belarusbank.by/api/infobox?city=%D0%9C%D0%B8%D0%BD%D1%81%D0%BA";
+//         wholeList  = doGet(http);
+//        new Thread() {
+//            @Override
+//            public void run() {
+                try {
+                    wholeList  = doGet(http);
+                } catch (JSONException | IOException e) {
+                    e.printStackTrace();
+                }
+//            }
+//        }.start();
         //从文件获取json数据并解析
         //载入数据
-//        wholeList = new ArrayList<>();
-        wholeList = doReader();
+//        wholeList = doReader();
         list = new ArrayList<>();
         //初次进入程序时 展示全部数据
         list.addAll(wholeList);
@@ -253,28 +273,30 @@ public class MainActivityWhole extends AppCompatActivity {
             for (int i = 0;i < array.length();i++) {
                 JSONObject stud = array.getJSONObject(i);//用于获取解析数据
                 StringBuffer st = new StringBuffer(); //用于拼接字符串
-                st.append("info_id : "+stud.getString("info_id")+ ",");
-                st.append("area : "+stud.getString("area")+ ",");
-                st.append("city_type : "+stud.getString("city_type")+ ",");
-                st.append("city : "+stud.getString("city")+ ",");
-                st.append("address_type : "+stud.getString("address_type")+ ",");
-                st.append("address : "+stud.getString("address")+ ",");
-                st.append("house : "+stud.getString("house")+ ",");
-                st.append("install_place : "+stud.getString("install_place")+ ",");
-                st.append("location_name_desc : "+stud.getString("location_name_desc")+ ",");
-                st.append("work_time : "+stud.getString("work_time")+ ",");
-                st.append("time_long : "+stud.getString("time_long")+ ",");
-                st.append("gps_x : "+stud.getString("gps_x")+ ",");
-                st.append("gps_y : "+stud.getString("gps_y")+ ",");
-                st.append("currency : "+stud.getString("currency")+ ",");
-                st.append("inf_type : "+stud.getString("inf_type")+ ",");
-                st.append("cash_in_exist : "+stud.getString("cash_in_exist")+ ",");
-                st.append("cash_in : "+stud.getString("cash_in")+ ",");
-                st.append("type_cash_in : "+stud.getString("type_cash_in")+ ",");
-                st.append("inf_printer : "+stud.getString("inf_printer")+ ",");
-                st.append("region_platej : "+stud.getString("region_platej")+ ",");
+                st.append("info_id : "+stud.getString("info_id")+ "\n");
+                st.append("area : "+stud.getString("area")+ "");
+                st.append("city_type : "+stud.getString("city_type")+ "");
+                st.append("city : "+stud.getString("city")+ "\n");
+                st.append("address_type : "+stud.getString("address_type")+ "");
+                st.append("address : "+stud.getString("address")+ "\n");
+                st.append("house : "+stud.getString("house")+ "");
+                st.append("install_place : "+stud.getString("install_place")+ "\n");
+                st.append("location_name_desc : "+stud.getString("location_name_desc")+ "\n");
+                st.append("work_time : "+stud.getString("work_time")+ "\n");
+                st.append("time_long : "+stud.getString("time_long")+ "\n");
+                st.append("gps_x : "+stud.getString("gps_x")+ "");
+                st.append("gps_y : "+stud.getString("gps_y")+ "\n");
+                st.append("currency : "+stud.getString("currency")+ "");
+                st.append("inf_type : "+stud.getString("inf_type")+ "\n");
+                st.append("cash_in_exist : "+stud.getString("cash_in_exist")+ "");
+                st.append("cash_in : "+stud.getString("cash_in")+ "\n");
+                st.append("type_cash_in : "+stud.getString("type_cash_in")+ "");
+                st.append("inf_printer : "+stud.getString("inf_printer")+ "\n");
+                st.append("region_platej : "+stud.getString("region_platej")+ "\n");
                 st.append("popolnenie_platej : "+stud.getString("popolnenie_platej")+ ",");
                 st.append("inf_status : "+stud.getString("inf_status"));
+//                String temp = st.toString();
+//                temp = temp.replace(',', '\n');
                 arrayList.add(st.toString());
                 bfr.close();
                 isr.close();
@@ -295,25 +317,29 @@ public class MainActivityWhole extends AppCompatActivity {
      * @return
      * @throws
      */
-    public  String doGet(String urlStr) {
+    public  ArrayList<String> doGet(String urlStr) throws JSONException, IOException {
+        ArrayList<String> arrayList = new ArrayList<>();
         StringBuffer sb = new StringBuffer();
-        try
-        {
+//        OkHttpClient client = new OkHttpClient();
+//        final Request request = new Request.Builder().url(urlStr).build();
+//        Call call = client.newCall(request);
+//        Response response = call.execute();
+//        String content = response.body().string();
+//        System.out.println(content);
+        try {
             URL url = new URL(urlStr);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(5000);
             conn.setDoInput(true);
             conn.setDoOutput(true);
-            if (conn.getResponseCode() == 200)
-            {
+            if (conn.getResponseCode() == 200) {
                 InputStream is = conn.getInputStream();
-                InputStreamReader isr = new InputStreamReader(is,"GBK");
+                InputStreamReader isr = new InputStreamReader(is, "UTF-8");
                 int len = 0;
                 char[] buf = new char[1024];
 
-                while ((len = isr.read(buf)) != -1)
-                {
+                while ((len = isr.read(buf)) != -1) {
                     sb.append(new String(buf, 0, len));
                 }
                 is.close();
@@ -322,11 +348,43 @@ public class MainActivityWhole extends AppCompatActivity {
                 System.out.println("请求url失败！");
             }
 
-        } catch (Exception e)
-        {
-            System.out.println(e.toString());
+        } catch (Exception e) {
+            System.out.println("!!!!!!"+e.toString());
         }
-        return sb.toString();
-    }
+//        System.out.println(sb.toString());
+        //将JSON数据转化为字符串
+//        JSONObject root = new JSONObject(sb.toString());
+        JSONArray array = new JSONArray(sb.toString());
+//            System.out.println("root:"+root.getString("cat"));//根据键名获取键值信息
+//        JSONArray array = root.getJSONArray("infoBox");
 
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject stud = array.getJSONObject(i);//用于获取解析数据
+            StringBuffer st = new StringBuffer(); //用于拼接字符串
+            st.append("info_id : " + stud.getString("info_id") + "\n");
+            st.append("area : " + stud.getString("area") + "");
+            st.append("city_type : " + stud.getString("city_type") + "");
+            st.append("city : " + stud.getString("city") + "\n");
+            st.append("address_type : " + stud.getString("address_type") + "");
+            st.append("address : " + stud.getString("address") + "\n");
+            st.append("house : " + stud.getString("house") + "");
+            st.append("install_place : " + stud.getString("install_place") + "\n");
+            st.append("location_name_desc : " + stud.getString("location_name_desc") + "\n");
+            st.append("work_time : " + stud.getString("work_time") + "\n");
+            st.append("time_long : " + stud.getString("time_long") + "\n");
+            st.append("gps_x : " + stud.getString("gps_x") + "");
+            st.append("gps_y : " + stud.getString("gps_y") + "\n");
+            st.append("currency : " + stud.getString("currency") + "");
+            st.append("inf_type : " + stud.getString("inf_type") + "\n");
+            st.append("cash_in_exist : " + stud.getString("cash_in_exist") + "");
+            st.append("cash_in : " + stud.getString("cash_in") + "\n");
+            st.append("type_cash_in : " + stud.getString("type_cash_in") + "");
+            st.append("inf_printer : " + stud.getString("inf_printer") + "\n");
+            st.append("region_platej : " + stud.getString("region_platej") + "\n");
+            st.append("popolnenie_platej : " + stud.getString("popolnenie_platej") + ",");
+            st.append("inf_status : " + stud.getString("inf_status"));
+            arrayList.add(st.toString());
+        }
+        return arrayList;
+    }
 }

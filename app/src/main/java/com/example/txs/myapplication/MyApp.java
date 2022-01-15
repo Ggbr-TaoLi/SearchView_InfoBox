@@ -5,8 +5,7 @@ import android.app.Application;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 /**
- * @author txs
- * @date 2018/01/16
+ * @date 2022/01/4
  */
 
 public class MyApp extends Application {

@@ -8,7 +8,7 @@
     android:background="@drawable/shape_search"
     android:layout_marginRight="8dp"
     android:layout_marginLeft="8dp"
-    android:layout_height="60dp">
+    android:layout_height="360dp">
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/imgv_simple"
         android:layout_marginRight="5dp"
@@ -25,14 +25,13 @@
         android:layout_height="45dp" />
     <TextView
         android:textColor="#0E0E0E"
-        android:gravity="center"
+        android:gravity="left"
         android:text="123"
         android:id="@+id/tv_text"
         android:marqueeRepeatLimit="marquee_forever"
         android:ellipsize="marquee"
         android:focusable="true"
-        android:singleLine="true"
         android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="45dp" />
+        android:layout_height="360dp" />
 </LinearLayout>

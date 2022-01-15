@@ -4,8 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/InfoBox.iml" filepath="$PROJECT_DIR$/.idea/modules/InfoBox.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/InfoBox.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/InfoBox.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/partchange/InfoBox.partchange.iml" filepath="$PROJECT_DIR$/.idea/modules/partchange/InfoBox.partchange.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testinndexof/InfoBox.testinndexof.iml" filepath="$PROJECT_DIR$/.idea/modules/testinndexof/InfoBox.testinndexof.iml" />
     </modules>
   </component>
 </project>
