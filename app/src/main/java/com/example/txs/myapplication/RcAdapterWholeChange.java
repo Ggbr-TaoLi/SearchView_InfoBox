@@ -24,9 +24,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * @date 2021/01/4
- */
 
 public class RcAdapterWholeChange extends RecyclerView.Adapter<RcAdapterWholeChange.MyViewHolder> {
     private Context context;

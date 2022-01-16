@@ -4,9 +4,6 @@ import android.app.Application;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
-/**
- * @date 2022/01/4
- */
 
 public class MyApp extends Application {
     @Override
